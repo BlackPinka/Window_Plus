@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>节能-供能-储能型智能窗系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <style>
+        /* 智能窗风格核心样式 */
+        :root {
+            --primary: #165DFF; 
+            --secondary: #36B37E; 
+            --dark: #1D1D1F;
+            --light: #F5F7FA;
+            --gray: #6E7378;
+            --light-gray: #E5E9F2;
+            --white: #ffffff;
+            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: var(--dark);
+            background-color: var(--light);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1226px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏样式优化 */
+        .navbar {
+            background-color: var(--white);
+            border-bottom: 1px solid var(--light-gray);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+        
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary) !important;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo i {
+            font-size: 1.8rem;
+        }
+        
+        .main-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .main-nav li {
+            margin-left: 24px;
+        }
+        
+        .main-nav a {
+            color: var(--dark);
+            text-decoration: none;
+            font-size: 14px;
+            line-height: 64px;
+            padding: 0 4px;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .main-nav a:hover {
+            color: var(--primary);
+        }
+        
+        .main-nav a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
+        
+        .main-nav a:hover:after {
+            width: 100%;
+        }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-right: 16px;
+        }
+        
+        .search-box input {
+            width: 245px;
+            height: 40px;
+            padding: 0 16px 0 40px;
+            border: 1px solid var(--light-gray);
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition);
+            background-color: var(--light);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .search-box input:focus {
+            border-color: var(--primary);
+            width: 300px;
+            background-color: var(--white);
+        }
+        
+        .cart-icon {
+            position: relative;
+            margin-left: 16px;
+        }
+        
+        .cart-icon a {
+            color: var(--dark);
+            font-size: 1.2rem;
+            text-decoration: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        
+        .cart-icon a:hover {
+            background-color: var(--light);
+            color: var(--primary);
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background-color: var(--primary);
+            color: white;
+            font-size: 12px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* 按钮样式优化 */
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            padding: 10px 25px;
+            font-size: 14px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        
+        .btn-primary:hover {
+            background-color: #0E4CD1;
+            border-color: #0E4CD1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(22, 93, 255, 0.2);
+        }
+        
+        /* 卡片样式优化 */
+        .mi-card {
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            margin-bottom: 20px;
+            border: none;
+        }
+        
+        .mi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+        
+        .mi-card-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 18px;
+            font-weight: 500;
+            background-color: var(--white);
+        }
+        
+        .mi-card-body {
+            padding: 20px;
+        }
+        
+        /* 标题样式优化 */
+        .section {
+            padding: 60px 0;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary);
+            margin: 0 auto;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        /* 产品卡片优化 */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+        
+        .product-card {
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            border-color: transparent;
+        }
+        
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .product-card:hover .product-img {
+            transform: scale(1.05);
+        }
+        
+        .product-img-container {
+            overflow: hidden;
+        }
+        
+        .product-info {
+            padding: 15px;
+        }
+        
+        .product-title {
+            font-size: 16px;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--dark);
+        }
+        
+        .product-desc {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .product-price {
+            font-size: 18px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        /* 模拟器和计算器样式优化 */
+        .simulator-controls, .calculator-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .control-group, .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .form-range {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background-color: var(--light-gray);
+        }
+        
+        .form-range::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .form-range::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 8px rgba(22, 93, 255, 0.1);
+        }
+        
+        /* FAQ样式优化 */
+        .accordion-item {
+            margin-bottom: 10px;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .accordion-item:hover {
+            border-color: var(--primary);
+        }
+        
+        .accordion-header {
+            background-color: var(--white);
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .accordion-header:hover {
+            background-color: var(--light);
+        }
+        
+        .accordion-header h3 {
+            font-size: 16px;
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        .accordion-content {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s, padding 0.3s;
+            background-color: var(--white);
+        }
+        
+        .accordion-content.active {
+            padding: 20px;
+            max-height: 500px;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .accordion-content p {
+            margin: 0;
+            color: var(--gray);
+            line-height: 1.7;
+        }
+        
+        /* 页脚样式优化 */
+        .footer {
+            background-color: var(--dark);
+            color: #b0b0b0;
+            padding: 60px 0 20px;
+            margin-top: 50px;
+        }
+        
+        .footer-columns {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h5 {
+            color: white;
+            font-size: 16px;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h5:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background-color: var(--primary);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-column li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column a {
+            color: #b0b0b0;
+            text-decoration: none;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        
+        .footer-column a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 12px;
+        }
+        
+        /* 智能模拟器特有样式 */
+        .simulator-display {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .window-preview {
+            flex: 1;
+            height: 300px;
+            background-color: var(--light);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .window-state {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            backdrop-filter: blur(4px);
+        }
+        
+        .simulator-results {
+            flex: 1;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background-color: var(--light);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+        
+        .stat-item:hover {
+            background-color: rgba(22, 93, 255, 0.05);
+            transform: translateY(-3px);
+        }
+        
+        .stat-item h5 {
+            font-size: 14px;
+            color: var(--gray);
+            margin: 0 0 8px 0;
+        }
+        
+        .stat-item p {
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--primary);
+            margin: 0;
+        }
+        
+        .chart-container {
+            height: 250px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .range-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        /* 轮播图样式 */
+        #miCarousel {
+            margin-bottom: 40px;
+        }
+        
+        .carousel-item img {
+            height: 500px;
+            object-fit: cover;
+        }
+        
+        .carousel-caption {
+            background-color: rgba(0,0,0,0.5);
+            padding: 20px;
+            border-radius: 8px;
+            bottom: 50px;
+            left: 10%;
+            right: 10%;
+            backdrop-filter: blur(4px);
+        }
+        
+        .carousel-caption h3 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .carousel-caption p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        /* 能耗计算器结果样式 */
+        .calculator-result {
+            margin-top: 30px;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .result-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .result-date {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .savings-summary {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .summary-item {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            padding: 20px;
+            background-color: var(--light);
+            border-radius: 8px;
+        }
+        
+        .summary-item h4 {
+            font-size: 14px;
+            color: var(--gray);
+            margin: 0 0 10px 0;
+        }
+        
+        .summary-item p {
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--primary);
+            margin: 0;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 992px) {
+            .simulator-display {
+                flex-direction: column;
+            }
+            
+            .window-preview {
+                width: 100%;
+            }
+            
+            .carousel-item img {
+                height: 400px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-container {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 10px 0;
+            }
+            
+            .main-nav {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                flex-wrap: wrap;
+            }
+            
+            .main-nav li {
+                margin: 0 10px;
+            }
+            
+            .footer-columns {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .carousel-item img {
+                height: 300px;
+            }
+            
+            .carousel-caption {
+                bottom: 20px;
+                padding: 15px;
+            }
+            
+            .carousel-caption h3 {
+                font-size: 1.5rem;
+            }
+            
+            .search-box input {
+                width: 180px;
+            }
+            
+            .search-box input:focus {
+                width: 220px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .nav-right {
+                margin-top: 10px;
+            }
+            
+            .footer-columns {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 40px 0;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="#" class="logo">
+                <i class="bi bi-lightbulb"></i>
+                光储智汇
+            </a>
+            
+            <ul class="main-nav">
+                <li><a href="#product">产品介绍</a></li>
+                <li><a href="#technology">技术优势</a></li>
+                <li><a href="#application">应用场景</a></li>
+                <li><a href="#simulator">智能模拟</a></li>
+                <li><a href="#calculator">能耗计算</a></li>
+                <li><a href="#faq">常见问题</a></li>
+            </ul>
+            
+            <div class="nav-right">
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" placeholder="搜索产品...">
+                </div>
+                <a href="#login" class="btn btn-primary">登录</a>
+                <div class="cart-icon">
+                    <a href="#"><i class="bi bi-cart"></i><span class="cart-count">0</span></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 轮播Banner -->
+    <div id="miCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="https://s.coze.cn/t/MNbTMb0U598/" alt="智能窗产品展示" class="d-block w-100">
+                <div class="carousel-caption">
+                    <h3>光储智汇智能窗系统</h3>
+                    <p>节能70%夏季热量传入，智能调控室内温度</p>
+                    <a href="#product" class="btn btn-primary">立即了解</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 产品介绍 -->
+        <section id="product" class="section">
+            <h2 class="section-title">产品介绍</h2>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-img-container">
+                        <img src="https://s.coze.cn/t/h9eoMJAUMbw/" alt="智能窗外观" class="product-img">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">节能-供能-储能型智能窗系统</h3>
+                        <p class="product-desc">基于先进的水凝胶热致变色技术，实现智能调控温度、节能降耗</p>
+                        <div class="product-price">¥询价</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img-container">
+                        <img src="https://s.coze.cn/t/bCSvG5n2Jpk/" alt="热致变色效果" class="product-img">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">热致变色技术模块</h3>
+                        <p class="product-desc">PNIPAM水凝胶和HPC水凝胶的热致变色材料，智能响应温度变化</p>
+                        <div class="product-price">¥询价</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img-container">
+                        <img src="https://s.coze.cn/t/Ez9_TT8dJHY/" alt="结构剖面图" class="product-img">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">多层复合结构</h3>
+                        <p class="product-desc">创新骨架结构，加快变色速度，提升透明度和韧性</p>
+                        <div class="product-price">¥询价</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img-container">
+                        <img src="https://s.coze.cn/t/SQJ0Ax4eEQs/" alt="商业建筑应用" class="product-img">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">商业建筑解决方案</h3>
+                        <p class="product-desc">为大型办公楼提供整体节能解决方案，降低运营成本</p>
+                        <div class="product-price">¥询价</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 智能窗模拟器 -->
+        <section id="simulator" class="section">
+            <h2 class="section-title">智能窗模拟器</h2>
+            <div class="mi-card">
+                <div class="mi-card-header">实时模拟智能窗工作状态</div>
+                <div class="mi-card-body">
+                    <div class="simulator-controls">
+                        <div class="control-group">
+                            <label for="temperature">环境温度 (°C)</label>
+                            <input type="range" id="temperature" min="-10" max="40" value="25" class="form-range">
+                            <div class="range-info">
+                                <span>-10°C</span>
+                                <span id="temp-value-display">25°C</span>
+                                <span>40°C</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label for="light-intensity">光照强度 (0-100%)</label>
+                            <input type="range" id="light-intensity" min="0" max="100" value="75" class="form-range">
+                            <div class="range-info">
+                                <span>0%</span>
+                                <span id="light-value-display">75%</span>
+                                <span>100%</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label for="window-mode">工作模式</label>
+                            <select id="window-mode" class="form-select">
+                                <option value="auto">自动模式</option>
+                                <option value="energy-saving">节能优先</option>
+                                <option value="comfort">舒适优先</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="simulator-display">
+                        <div class="window-preview">
+                            <div class="window-state">
+                                <div><strong>透明度:</strong> <span id="transparency-value">70%</span></div>
+                                <div><strong>状态:</strong> <span id="window-status">半透明</span></div>
+                                <div><strong>节能率:</strong> <span id="energy-saving-rate">28%</span></div>
+                            </div>
+                            <img id="window-preview-img" src="https://s.coze.cn/t/h9eoMJAUMbw/" alt="智能窗预览">
+                        </div>
+                        
+                        <div class="simulator-results">
+                            <div class="chart-container">
+                                <canvas id="energy-chart"></canvas>
+                            </div>
+                            <div class="result-stats">
+                                <div class="stat-item">
+                                    <h5>预计节能率</h5>
+                                    <p id="energy-saving">28%</p>
+                                </div>
+                                <div class="stat-item">
+                                    <h5>室内温度</h5>
+                                    <p id="indoor-temp">23°C</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 能耗计算器 -->
+        <section id="calculator" class="section">
+            <h2 class="section-title">能耗计算器</h2>
+            <div class="mi-card">
+                <div class="mi-card-header">估算您的节能效益</div>
+                <div class="mi-card-body">
+                    <div class="calculator-form">
+                        <div class="form-group">
+                            <label for="window-area">窗户面积 (m²)</label>
+                            <input type="number" id="window-area" class="form-control" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="location">所在地区</label>
+                            <select id="location" class="form-select">
+                                <option value="north">北方地区</option>
+                                <option value="central" selected>中部地区</option>
+                                <option value="south">南方地区</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="building-type">建筑类型</label>
+                            <select id="building-type" class="form-select">
+                                <option value="residential" selected>住宅</option>
+                                <option value="commercial">商业建筑</option>
+                                <option value="office">办公楼</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="electricity-cost">电价 (元/度)</label>
+                            <input type="number" id="electricity-cost" class="form-control" value="0.56" min="0.1" step="0.01">
+                        </div>
+                    </div>
+                    <button id="calculate-btn" class="btn btn-primary">计算节能效益</button>
+                    <div class="calculator-result">
+                        <div class="result-header">
+                            <h3>节能效益分析</h3>
+                            <span class="result-date">更新于 2025-07-21</span>
+                        </div>
+                        <div class="savings-summary">
+                            <div class="summary-item">
+                                <h4>预计年节电量</h4>
+                                <p id="annual-savings">1,256 <small>度</small></p>
+                            </div>
+                            <div class="summary-item">
+                                <h4>预计年节省费用</h4>
+                                <p id="annual-cost-savings">¥703.36</p>
+                            </div>
+                            <div class="summary-item">
+                                <h4>预计投资回收期</h4>
+                                <p id="payback-period">5.2 <small>年</small></p>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="savings-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 常见问题 -->
+        <section id="faq" class="section">
+            <h2 class="section-title">常见问题</h2>
+            <div class="mi-card">
+                <div class="mi-card-body">
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3>智能窗的使用寿命是多久？</h3>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div class="accordion-content active">
+                            <p>光储智汇智能窗系统采用高品质材料和耐用设计，正常使用情况下使用寿命可达15-20年。水凝胶材料具有良好的稳定性和抗老化性能，经过加速老化测试验证，可承受至少10万次温度循环变化而保持性能稳定。我们提供5年产品质保和10年核心组件质保，确保长期使用无忧。</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3>安装智能窗需要改造现有建筑结构吗？</h3>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <p>不需要大规模改造。我们的智能窗系统设计为标准窗户尺寸，可直接替换现有窗户。安装过程与普通窗户类似，通常不需要改变墙体结构。对于特殊尺寸或非标准窗户，我们提供定制服务，确保与现有建筑结构完美匹配。标准安装过程仅需2-3小时/扇，不会对日常生活造成长时间干扰。</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3>智能窗需要电源或电池供电吗？</h3>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <p>我们的基础款智能窗采用纯被动式设计，无需外部电源，完全依靠材料本身的热致变色特性工作。高级款可配备小型太阳能电池板供电，实现更智能的调控功能和远程控制，太阳能板寿命可达10年以上，一般情况下无需更换电池。两种型号都无需复杂的电路改造，安装便捷。</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3>如何清洁和维护智能窗？</h3>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <p>智能窗的清洁与普通窗户类似，可使用软布和中性清洁剂擦拭表面。注意避免使用含有研磨剂或强酸强碱的清洁剂。水凝胶层被密封在双层玻璃之间，无需直接清洁。建议每年进行一次简单检查，确保密封性能良好。对于电机控制的智能调节系统，每2-3年可进行一次专业维护。我们提供全国范围内的上门维护服务，确保产品长期稳定运行。</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3>智能窗有保修服务吗？</h3>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <p>是的，我们提供全面的保修服务。产品本身享受5年质保，其中水凝胶核心组件享受10年质保。安装服务享受2年质保。保修期内，如因产品质量问题导致的故障，我们将提供免费维修或更换服务。此外，我们还提供延长保修计划，可将质保期延长至15年。全国1100余家售后网点确保您能快速获得专业服务支持。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-columns">
+                <div class="footer-column">
+                    <h5>产品中心</h5>
+                    <ul>
+                        <li><a href="#product">智能窗系统</a></li>
+                        <li><a href="#">技术参数</a></li>
+                        <li><a href="#">安装指南</a></li>
+                        <li><a href="#">售后服务</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h5>关于我们</h5>
+                    <ul>
+                        <li><a href="#">团队介绍</a></li>
+                        <li><a href="#">项目背景</a></li>
+                        <li><a href="#">研发历程</a></li>
+                        <li><a href="#">荣誉资质</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h5>联系方式</h5>
+                    <ul>
+                        <li>电话：13190575731</li>
+                        <li>邮箱：contact@guangchuzhihui.com</li>
+                        <li>地址：北京市昌平区中国石油大学(北京)</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h5>关注我们</h5>
+                    <ul>
+                        <li><a href="#">微信公众号</a></li>
+                        <li><a href="#">微博</a></li>
+                        <li><a href="#">抖音</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 光储智汇智能窗系统 - 中国石油大学(北京) 版权所有</p>
+                <p>京ICP备10046444号 | 京公网安备11010802020134号</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 智能窗模拟器功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const temperatureSlider = document.getElementById('temperature');
+            const lightSlider = document.getElementById('light-intensity');
+            const modeSelect = document.getElementById('window-mode');
+            const tempValueDisplay = document.getElementById('temp-value-display');
+            const lightValueDisplay = document.getElementById('light-value-display');
+            const transparencyValue = document.getElementById('transparency-value');
+            const windowStatus = document.getElementById('window-status');
+            const energySavingRate = document.getElementById('energy-saving-rate');
+            const energySaving = document.getElementById('energy-saving');
+            const indoorTemp = document.getElementById('indoor-temp');
+            const windowPreviewImg = document.getElementById('window-preview-img');
+            
+            // 初始化图表
+            let energyChart;
+            
+            function initChart() {
+                const ctx = document.getElementById('energy-chart').getContext('2d');
+                energyChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['传统窗户', '智能窗', '节能比例'],
+                        datasets: [{
+                            label: '能耗对比 (kWh/m²/年)',
+                            data: [150, 105, 30],
+                            backgroundColor: [
+                                'rgba(235, 87, 87, 0.7)',
+                                'rgba(75, 192, 192, 0.7)',
+                                'rgba(22, 93, 255, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(235, 87, 87, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(22, 93, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // 更新窗户预览
+            function updateWindowPreview() {
+                const temp = parseInt(temperatureSlider.value);
+                const light = parseInt(lightSlider.value);
+                const mode = modeSelect.value;
+                
+                let transparency, statusText, savingRate;
+                
+                // 根据温度和模式计算透明度
+                if (mode === 'energy-saving') {
+                    // 节能优先模式
+                    if (temp > 28) {
+                        transparency = Math.max(10, 100 - (temp - 20) * 5);
+                        statusText = '高度隔热';
+                        savingRate = Math.round((1 - transparency / 100) * 100);
+                    } else if (temp < 15) {
+                        transparency = 90;
+                        statusText = '高透光保温';
+                        savingRate = 15;
+                    } else {
+                        transparency = 70;
+                        statusText = '平衡模式';
+                        savingRate = 30;
+                    }
+                } else if (mode === 'comfort') {
+                    // 舒适优先模式
+                    if (temp > 26) {
+                        transparency = Math.max(20, 100 - (temp - 20) * 4);
+                        statusText = '隔热模式';
+                        savingRate = Math.round((1 - transparency / 100) * 80);
+                    } else if (temp < 18) {
+                        transparency = 85;
+                        statusText = '保温模式';
+                        savingRate = 18;
+                    } else {
+                        transparency = 80;
+                        statusText = '舒适透光';
+                        savingRate = 20;
+                    }
+                } else {
+                    // 自动模式
+                    if (temp > 30) {
+                        transparency = Math.max(10, 100 - (temp - 20) * 3.5);
+                        statusText = '强隔热';
+                        savingRate = Math.round((1 - transparency / 100) * 100);
+                    } else if (temp < 10) {
+                        transparency = 90;
+                        statusText = '强保温';
+                        savingRate = 15;
+                    } else {
+                        transparency = Math.max(30, 70 - (temp - 20) * 2);
+                        statusText = '自动调节';
+                        savingRate = Math.round((1 - transparency / 100) * 80);
+                    }
+                }
+                
+                // 应用光照影响
+                if (light < 30) {
+                    transparency = Math.min(90, transparency + 20);
+                }
+                
+                // 更新显示
+                transparencyValue.textContent = transparency + '%';
+                windowStatus.textContent = statusText;
+                energySavingRate.textContent = savingRate + '%';
+                energySaving.textContent = savingRate + '%';
+                
+                // 计算室内温度
+                const calculatedIndoorTemp = Math.round(temp - (savingRate / 100) * (temp - 20));
+                indoorTemp.textContent = calculatedIndoorTemp + '°C';
+                
+                // 更新窗户图片透明度
+                windowPreviewImg.style.opacity = transparency / 100;
+                
+                // 更新图表
+                if (energyChart) {
+                    const traditionalEnergy = 150;
+                    const smartWindowEnergy = traditionalEnergy * (transparency / 100);
+                    energyChart.data.datasets[0].data = [
+                        traditionalEnergy,
+                        smartWindowEnergy,
+                        savingRate
+                    ];
+                    energyChart.update();
+                }
+            }
+            
+            // 事件监听器
+            temperatureSlider.addEventListener('input', function() {
+                const value = this.value;
+                tempValueDisplay.textContent = value + '°C';
+                updateWindowPreview();
+            });
+            
+            lightSlider.addEventListener('input', function() {
+                const value = this.value;
+                lightValueDisplay.textContent = value + '%';
+                updateWindowPreview();
+            });
+            
+            modeSelect.addEventListener('change', updateWindowPreview);
+            
+            // 初始化
+            initChart();
+            updateWindowPreview();
+            
+            // 能耗计算器功能
+            const calculateBtn = document.getElementById('calculate-btn');
+            
+            calculateBtn.addEventListener('click', function() {
+                const area = parseFloat(document.getElementById('window-area').value);
+                const location = document.getElementById('location').value;
+                const buildingType = document.getElementById('building-type').value;
+                const electricityCost = parseFloat(document.getElementById('electricity-cost').value);
+                
+                // 根据不同因素计算节能量
+                let baseSavingsPerSqm = 120; // 基础每平米节能量
+                
+                // 地区系数
+                let locationFactor = 1;
+                if (location === 'north') {
+                    locationFactor = 1.3; // 北方地区节能更多
+                } else if (location === 'south') {
+                    locationFactor = 1.1; // 南方地区
+                }
+                
+                // 建筑类型系数
+                let buildingFactor = 1;
+                if (buildingType === 'commercial') {
+                    buildingFactor = 1.5; // 商业建筑能耗更高
+                } else if (buildingType === 'office') {
+                    buildingFactor = 1.2; // 办公楼
+                }
+                
+                // 计算总节能量和节省费用
+                const annualSavings = Math.round(area * baseSavingsPerSqm * locationFactor * buildingFactor);
+                const annualCostSavings = (annualSavings * electricityCost).toFixed(2);
+                
+                // 估算投资回收期 (简化模型)
+                const installationCostPerSqm = 650; // 每平米安装成本
+                const totalCost = area * installationCostPerSqm;
+                const paybackPeriod = (totalCost / (annualSavings * electricityCost)).toFixed(1);
+                
+                // 更新显示
+                document.getElementById('annual-savings').textContent = annualSavings.toLocaleString() + ' ';
+                document.getElementById('annual-cost-savings').textContent = '¥' + annualCostSavings;
+                document.getElementById('payback-period').textContent = paybackPeriod + ' ';
+                
+                // 更新图表
+                updateSavingsChart(annualSavings, annualCostSavings);
+            });
+            
+            // 初始化节省图表
+            let savingsChart;
+            
+            function initSavingsChart() {
+                const ctx = document.getElementById('savings-chart').getContext('2d');
+                
+                savingsChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['第1年', '第3年', '第5年', '第10年', '第15年'],
+                        datasets: [{
+                            label: '累计节省费用 (元)',
+                            data: [700, 2100, 3500, 7000, 10500],
+                            fill: false,
+                            borderColor: 'rgb(22, 93, 255)',
+                            tension: 0.1,
+                            pointBackgroundColor: 'rgb(22, 93, 255)',
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // 更新节省图表
+            function updateSavingsChart(annualSavings, annualCostSavings) {
+                const yearlySavings = parseFloat(annualCostSavings);
+                
+                if (!savingsChart) {
+                    initSavingsChart();
+                }
+                
+                savingsChart.data.datasets[0].data = [
+                    yearlySavings,
+                    Math.round(yearlySavings * 3),
+                    Math.round(yearlySavings * 5),
+                    Math.round(yearlySavings * 10),
+                    Math.round(yearlySavings * 15)
+                ];
+                savingsChart.update();
+            }
+            
+            // 初始化节省图表
+            initSavingsChart();
+            
+            // FAQ折叠面板功能
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const icon = this.querySelector('.bi-chevron-down');
+                    
+                    content.classList.toggle('active');
+                    icon.style.transform = content.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
